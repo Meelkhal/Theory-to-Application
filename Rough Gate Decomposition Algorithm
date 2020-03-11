@@ -1,0 +1,64 @@
+import numpy as np
+from math import pi,sqrt
+
+# The following code is to test a rough algorithm to test the universality of a set of quantum gates. 
+# The protocol first uses some gate set G = {G_1,G_2,...,G_n} then takes in a unitary U and attempts to decompose U as 
+# a product of G_i's by using the following algorithm.
+#
+#
+#
+# 1. Define a matrix known as U_prod = I, where I is the identity as well as some epsilon
+# 2. Check the distance between U and every G_i. For the closest G_i define U_prod = G_i*U_prod
+# 3. If distance between U_prod and U is less than epsilon stop otherwise repeat steps 1 and 2
+
+
+# To see if the algorithm works as a test case see if one can construct Z as a decomposition of H,X,H
+# Hypothesis the algoirthm may not work all the time as the convergence has not been proven hence we do not
+# no if the values will converge
+
+def Frobenius(A,B):
+    C = np.matmul(np.conj(A),B)
+    return C
+
+def d(A,B):
+    D = A-B
+    M = Frobenius(A,B)
+    distance = np.trace(M)
+    return distance
+    
+def main():
+    H = np.matrix('0.707106 0.707106; 0.707106 -0.707106')
+    X = np.array([[0,1],[1,0]])
+    Y = np.array([[0,0-1j],[0+1j,0]])
+    Z = np.array([[1,0],[0,-1]])
+    # Definition of the main pauli-gates (X,Y,Z) and Hadammard
+    I = np.array([[1,0],[0,1]])
+    
+
+    print(np.matmul(I,X))
+    
+    U = np.array([[1,0],[0,-1]])
+    
+    U_prod = I
+    for x in range(5):
+        print(U_prod)
+        epsilon = 10^-3
+        
+        d_H = d(U,H)
+        d_X = d(U,X)
+        
+        if d_H < d_X:
+            U_prod = np.matmul(H,U_prod)
+            print("H")
+        else:
+            U_prod = np.matmul(X,U_prod)
+            print("X")
+            
+        if d(U,U_prod) < epsilon:
+            break
+    
+    print(U)
+    print(U_prod)
+    
+    
+main()
